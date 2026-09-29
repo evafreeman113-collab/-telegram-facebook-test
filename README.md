@@ -2,45 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram Facebook WebView Test</title>
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Telegram Mini App Test</title>
+
+  <!-- Telegram Mini App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root {
-      color-scheme: light dark;
       --bg: var(--tg-theme-bg-color, #ffffff);
       --text: var(--tg-theme-text-color, #111111);
       --hint: var(--tg-theme-hint-color, #777777);
       --button: var(--tg-theme-button-color, #2481cc);
       --button-text: var(--tg-theme-button-text-color, #ffffff);
+      --secondary: rgba(127, 127, 127, 0.15);
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      padding: 24px;
-      min-height: 100vh;
+      padding: 0;
+      min-height: 100%;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      text-align: center;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .card {
+      width: 100%;
       max-width: 520px;
-      margin: 0 auto;
       padding: 24px;
-      border-radius: 18px;
-      background: rgba(127, 127, 127, 0.10);
+      border-radius: 20px;
+      background: var(--secondary);
+      text-align: center;
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0 0 12px;
       font-size: 26px;
     }
 
@@ -74,6 +96,17 @@
       color: var(--hint);
       word-break: break-word;
     }
+
+    .info {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .info strong {
+      color: var(--text);
+    }
   </style>
 </head>
 
@@ -81,56 +114,122 @@
 
   <main class="card">
 
-    <h1>Telegram → Facebook WebView Test</h1>
+    <h1>Telegram Mini App Test</h1>
 
     <p>
-      This version tests whether Facebook can remain inside
-      Telegram's WebView instead of being opened as an external link.
+      This page tests whether the website is actually running
+      inside Telegram's Mini App environment.
     </p>
 
-    <button id="facebookBtn">
-      Open Facebook in this WebView
+    <button id="testButton">
+      Test Telegram WebView
     </button>
 
-    <button id="closeBtn" class="secondary">
+    <button id="closeButton" class="secondary">
       Close Mini App
     </button>
 
     <div id="status">
-      Ready.
+      Initializing...
+    </div>
+
+    <div class="info">
+      <div>
+        <strong>Telegram:</strong>
+        <span id="telegramStatus">Checking...</span>
+      </div>
+
+      <div>
+        <strong>Platform:</strong>
+        <span id="platform">Checking...</span>
+      </div>
+
+      <div>
+        <strong>Version:</strong>
+        <span id="version">Checking...</span>
+      </div>
     </div>
 
   </main>
 
   <script>
     const tg = window.Telegram?.WebApp;
-    const status = document.getElementById("status");
 
+    const status = document.getElementById("status");
+    const telegramStatus =
+      document.getElementById("telegramStatus");
+    const platform =
+      document.getElementById("platform");
+    const version =
+      document.getElementById("version");
+
+    const testButton =
+      document.getElementById("testButton");
+
+    const closeButton =
+      document.getElementById("closeButton");
+
+
+    // Check whether Telegram's Mini App API exists.
     if (tg) {
+
       tg.ready();
       tg.expand();
+
+      telegramStatus.textContent = "YES";
+      platform.textContent = tg.platform || "Unknown";
+      version.textContent = tg.version || "Unknown";
+
+      status.textContent =
+        "Running inside Telegram Mini App.";
+
+    } else {
+
+      telegramStatus.textContent = "NO";
+      platform.textContent = "Browser";
+      version.textContent = "N/A";
+
+      status.textContent =
+        "This page is running in a normal browser.";
+
     }
 
-    document
-      .getElementById("facebookBtn")
-      .addEventListener("click", function () {
 
-        status.textContent = "Navigating to Facebook...";
+    // Test button.
+    testButton.addEventListener("click", function () {
 
-        window.location.href = "https://www.facebook.com/";
-      });
+      if (tg) {
 
-    document
-      .getElementById("closeBtn")
-      .addEventListener("click", function () {
+        status.textContent =
+          "SUCCESS: Telegram WebApp API is active.";
 
-        if (tg && typeof tg.close === "function") {
-          tg.close();
-        } else {
-          status.textContent = "Opened outside Telegram.";
-        }
+        tg.HapticFeedback?.impactOccurred("light");
 
-      });
+      } else {
+
+        status.textContent =
+          "Telegram WebApp API was not detected.";
+
+      }
+
+    });
+
+
+    // Close Mini App.
+    closeButton.addEventListener("click", function () {
+
+      if (tg && typeof tg.close === "function") {
+
+        tg.close();
+
+      } else {
+
+        status.textContent =
+          "There is no Telegram Mini App to close.";
+
+      }
+
+    });
   </script>
 
 </body>
