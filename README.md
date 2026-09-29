@@ -1,1 +1,137 @@
-html <!DOCTYPE html> <html lang="en"> <head>   <meta charset="UTF-8">   <meta name="viewport" content="width=device-width, initial-scale=1.0">   <title>Telegram Facebook WebView Test</title>    <script src="https://telegram.org/js/telegram-web-app.js"></script>    <style>     :root {       color-scheme: light dark;       --bg: var(--tg-theme-bg-color, #ffffff);       --text: var(--tg-theme-text-color, #111111);       --hint: var(--tg-theme-hint-color, #777777);       --button: var(--tg-theme-button-color, #2481cc);       --button-text: var(--tg-theme-button-text-color, #ffffff);     }      * {       box-sizing: border-box;     }      body {       margin: 0;       padding: 24px;       min-height: 100vh;       background: var(--bg);       color: var(--text);       font-family:         -apple-system,         BlinkMacSystemFont,         "Segoe UI",         Roboto,         sans-serif;       text-align: center;     }      .card {       max-width: 520px;       margin: 0 auto;       padding: 24px;       border-radius: 18px;       background: rgba(127, 127, 127, 0.10);     }      h1 {       margin-top: 0;       font-size: 26px;     }      p {       line-height: 1.5;       color: var(--hint);     }      button {       width: 100%;       border: 0;       border-radius: 12px;       padding: 15px 18px;       margin-top: 12px;       font-size: 16px;       font-weight: 600;       cursor: pointer;       background: var(--button);       color: var(--button-text);     }      button.secondary {       background: transparent;       color: var(--text);       border: 1px solid rgba(127, 127, 127, 0.35);     }      #status {       margin-top: 18px;       font-size: 14px;       color: var(--hint);       word-break: break-word;     }   </style> </head>  <body>    <main class="card">      <h1>Telegram → Facebook WebView Test</h1>      <p>       This version tests whether Facebook can remain inside       Telegram's WebView instead of being opened as an external link.     </p>      <button id="facebookBtn">       Open Facebook in this WebView     </button>      <button id="closeBtn" class="secondary">       Close Mini App     </button>      <div id="status">       Ready.     </div>    </main>    <script>     const tg = window.Telegram?.WebApp;     const status = document.getElementById("status");      // Initialize Telegram Mini App     if (tg) {       tg.ready();       tg.expand();     }      // Open Facebook using normal webpage navigation.     // This deliberately does NOT use Telegram.WebApp.openLink().     document       .getElementById("facebookBtn")       .addEventListener("click", function () {          status.textContent = "Navigating to Facebook...";          window.location.href = "https://www.facebook.com/";       });      // Close the Mini App     document       .getElementById("closeBtn")       .addEventListener("click", function () {          if (tg && typeof tg.close === "function") {           tg.close();         } else {           status.textContent = "Opened outside Telegram.";         }        });   </script>  </body> </html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram Facebook WebView Test</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: var(--tg-theme-bg-color, #ffffff);
+      --text: var(--tg-theme-text-color, #111111);
+      --hint: var(--tg-theme-hint-color, #777777);
+      --button: var(--tg-theme-button-color, #2481cc);
+      --button-text: var(--tg-theme-button-text-color, #ffffff);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      text-align: center;
+    }
+
+    .card {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px;
+      border-radius: 18px;
+      background: rgba(127, 127, 127, 0.10);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    p {
+      line-height: 1.5;
+      color: var(--hint);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 15px 18px;
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--button);
+      color: var(--button-text);
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(127, 127, 127, 0.35);
+    }
+
+    #status {
+      margin-top: 18px;
+      font-size: 14px;
+      color: var(--hint);
+      word-break: break-word;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+
+    <h1>Telegram → Facebook WebView Test</h1>
+
+    <p>
+      This version tests whether Facebook can remain inside
+      Telegram's WebView instead of being opened as an external link.
+    </p>
+
+    <button id="facebookBtn">
+      Open Facebook in this WebView
+    </button>
+
+    <button id="closeBtn" class="secondary">
+      Close Mini App
+    </button>
+
+    <div id="status">
+      Ready.
+    </div>
+
+  </main>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    const status = document.getElementById("status");
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    document
+      .getElementById("facebookBtn")
+      .addEventListener("click", function () {
+
+        status.textContent = "Navigating to Facebook...";
+
+        window.location.href = "https://www.facebook.com/";
+      });
+
+    document
+      .getElementById("closeBtn")
+      .addEventListener("click", function () {
+
+        if (tg && typeof tg.close === "function") {
+          tg.close();
+        } else {
+          status.textContent = "Opened outside Telegram.";
+        }
+
+      });
+  </script>
+
+</body>
+</html>
